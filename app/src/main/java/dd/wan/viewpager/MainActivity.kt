@@ -2,11 +2,11 @@ package dd.wan.viewpager
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -18,19 +18,31 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private var mSelectedPageIndex = 1
+    var list = ArrayList<CalendarFragment>()
+    var listday = arrayListOf<String>("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun")
+    var sdfMonth = SimpleDateFormat("MMMM", Locale.ENGLISH)
+    var sdfYear = SimpleDateFormat("yyyy", Locale.ENGLISH)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         var calendar: Calendar = Calendar.getInstance(Locale.getDefault())
         var prevMonth = calendar.clone() as Calendar
         var nextMonth = calendar.clone() as Calendar
         prevMonth.add(Calendar.MONTH, -1)
         nextMonth.add(Calendar.MONTH, 1)
-        var list = ArrayList<CalendarFragment>()
-        list.add(CalendarFragment().newInstance(prevMonth))
-        list.add(CalendarFragment().newInstance(calendar))
-        list.add(CalendarFragment().newInstance(nextMonth))
+        var month = sdfMonth.format(calendar.time)
+        tv_month.text = month
+        var year = sdfYear.format(calendar.time)
+        tv_year.text = year
+
+
+        // tạo danh sách fragment và setup viewpager
+        list.add(CalendarFragment().newInstance(prevMonth, -2)) // mặc định bắt đầu từ thứ 2
+        list.add(CalendarFragment().newInstance(calendar, -2))
+        list.add(CalendarFragment().newInstance(nextMonth, -2))
         var adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, list)
         viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
@@ -48,32 +60,95 @@ class MainActivity : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == ViewPager.SCROLL_STATE_IDLE) {
                     if (mSelectedPageIndex < 1) {
-                        list[0].onPreviousMonth()
-                        list[1].onPreviousMonth()
-                        list[2].onPreviousMonth()
+                        for (item in list) {
+                            item.onPreviousMonth() // mỗi tháng lùi về 1 tháng
+                        }
                     } else if (mSelectedPageIndex > 1) {
-                        list[0].onNextMonth()
-                        list[1].onNextMonth()
-                        list[2].onNextMonth()
+                        for (item in list) {
+                            item.onNextMonth()
+                        }
                     }
                     viewPager.setCurrentItem(1, false)
+                    var cal = list[1].getCurrentCalendar()
+                    tv_month.text = sdfMonth.format(cal.time)
+                    tv_year.text = sdfYear.format(cal.time)
                 }
             }
         })
         viewPager.adapter = adapter
         viewPager.setCurrentItem(1, false)
 
-        setting.setOnClickListener{
-            var popupMenu = PopupMenu(applicationContext,it)
-            popupMenu.menuInflater.inflate(R.menu.menu,popupMenu.menu)
+        setting.setOnClickListener {
+            var popupMenu = PopupMenu(applicationContext, it)
+            popupMenu.menuInflater.inflate(R.menu.menu, popupMenu.menu)
             popupMenu.show()
-
             popupMenu.setOnMenuItemClickListener {
-
+                when (it.itemId) {
+                    R.id.mon -> {
+                        changeStart(-2)
+                    }
+                    R.id.tue -> {
+                        changeStart(-3)
+                    }
+                    R.id.wed -> {
+                        changeStart(3)
+                    }
+                    R.id.thur -> {
+                        changeStart(2)
+                    }
+                    R.id.fri -> {
+                        changeStart(1)
+                    }
+                    R.id.sat -> {
+                        changeStart(0)
+                    }
+                    R.id.sun -> {
+                        changeStart(-1)
+                    }
+                }
                 false
             }
         }
+
+
+        // hiển thị ngày trong tuần
+        var adapterDay = DayAdapter(listday)
+        val layoutManager: RecyclerView.LayoutManager =
+            GridLayoutManager(this, 7)
+        dayOfWeek.layoutManager =  layoutManager
+        dayOfWeek.setHasFixedSize(true)
+        dayOfWeek.setItemViewCacheSize(7)
+        dayOfWeek.adapter = adapterDay
     }
 
+    fun changeStart(start: Int) {
+        for (item in list) {
+            item.startWeekOn(start)
+        }
+    }
+
+
+    class DayAdapter(var list: ArrayList<String>) : RecyclerView.Adapter<DayAdapter.ViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayAdapter.ViewHolder {
+            var view: View =
+                LayoutInflater.from(parent.context).inflate(R.layout.custom_days, parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: DayAdapter.ViewHolder, position: Int) {
+            holder.setData(list.get(position))
+        }
+
+        override fun getItemCount(): Int {
+            return list.size
+        }
+
+        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            var textView: TextView = itemView.findViewById(R.id.tv_dayOfW)
+            fun setData(string: String) {
+                textView.text = string
+            }
+        }
+    }
 }
 
