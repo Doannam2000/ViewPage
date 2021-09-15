@@ -17,6 +17,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
+import java.text.SimpleDateFormat
 
 
 class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
@@ -26,7 +27,7 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
             LayoutInflater.from(parent.context).inflate(R.layout.custom_item, parent, false)
         return ViewHolder(view)
     }
-
+    var da = Calendar.getInstance(Locale.getDefault())
     override fun onBindViewHolder(holder: CalendarAdapter.ViewHolder, position: Int) {
         var monthDate = list.get(position)
         var calendar: Calendar = Calendar.getInstance()
@@ -40,7 +41,17 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
         if (month == currentMonth && year == currentYear) {
             holder.setColor()
         }
-
+        else
+        {
+            holder.textView.alpha = 0.5F
+        }
+        if(day == da.get(Calendar.DAY_OF_MONTH) && currentDate.get(Calendar.MONTH) == da.get(Calendar.MONTH))
+        {
+            holder.layout.setBackgroundColor(Color.GRAY)
+        }else
+        {
+            holder.layout.setBackgroundColor(Color.parseColor("#f8f8f8"))
+        }
     }
 
     override fun getItemCount(): Int {
@@ -54,7 +65,6 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
         fun setData(string: String) {
             textView.text = string
         }
-
         fun setColor() {
             textView.alpha = 1F
         }

@@ -16,7 +16,8 @@ import java.util.*
 class CalendarFragment : Fragment() {
 //    var calendar: Calendar = Calendar.getInstance(Locale.getDefault())
     var dates: ArrayList<Date> = ArrayList()
-    var sdfDate = SimpleDateFormat("dd")
+    var sdfMonth = SimpleDateFormat("MMMM",Locale.ENGLISH)
+    var sdfYear = SimpleDateFormat("yyyy",Locale.ENGLISH)
     lateinit var calendar:Calendar
     lateinit var adapter:CalendarAdapter
     fun newInstance(calendar: Calendar) = CalendarFragment().apply {
@@ -25,21 +26,21 @@ class CalendarFragment : Fragment() {
         )
     }
     private lateinit var calendarRecycler: RecyclerView
-    private lateinit var currentDate: TextView
-    private lateinit var month: TextView
+    private lateinit var tv_year: TextView
+    private lateinit var tv_month: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        calendar = arguments?.getSerializable("calendar") as Calendar
         var view: View = inflater.inflate(R.layout.fragment_calendar, container, false)
         calendarRecycler = view.findViewById(R.id.recycler_calendar)
-        currentDate = view.findViewById(R.id.tv_currentdate)
-        month = view.findViewById(R.id.tv_month)
-        calendar = arguments?.getSerializable("calendar") as Calendar
-        updateData()
+        tv_year = view.findViewById(R.id.tv_year)
+        tv_month = view.findViewById(R.id.tv_month)
         adapter = CalendarAdapter(dates, calendar)
+        updateData()
         setUpCalendar()
         return view
     }
@@ -53,17 +54,21 @@ class CalendarFragment : Fragment() {
         var dividerItemDecoration1 = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         calendarRecycler.addItemDecoration(dividerItemDecoration)
         calendarRecycler.addItemDecoration(dividerItemDecoration1)
+        calendarRecycler.setItemAnimator(null);
+        calendarRecycler.setItemViewCacheSize(42);
         calendarRecycler.adapter = adapter
     }
     fun updateData()
     {
+        var month = sdfMonth.format(calendar.time)
+        tv_month.text = month
+        var year = sdfYear.format(calendar.time)
+        tv_year.text = year
         dates.clear()
-        var date = sdfDate.format(calendar.time)
-        currentDate.text = date
         var monthCalendar: Calendar = calendar.clone() as Calendar
         monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
-        var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK)-2
-        monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
+        var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) - 2
+        monthCalendar.add(Calendar.DAY_OF_MONTH,-firstOfMonth)
         while (dates.size < 42) {
             dates.add(monthCalendar.time)
             monthCalendar.add(Calendar.DAY_OF_MONTH, 1)

@@ -19,8 +19,6 @@ class CustomCalendar(context: Context?, attrs: AttributeSet?) :
     var calendar: Calendar = Calendar.getInstance(Locale.getDefault())
     var dates: ArrayList<Date> = ArrayList()
     var sdfDate = SimpleDateFormat("dd")
-    var sdfMonth = SimpleDateFormat("MM")
-    var sdfYear = SimpleDateFormat("yyyy")
 
     private lateinit var calendarRecycler: RecyclerView
     private lateinit var currentDate: TextView
@@ -30,7 +28,7 @@ class CustomCalendar(context: Context?, attrs: AttributeSet?) :
         context?.let {
             var view: View = View.inflate(context, R.layout.custom_calendar, this)
             calendarRecycler = view.findViewById(R.id.recycler_calendar)
-            currentDate = view.findViewById(R.id.tv_currentdate)
+            currentDate = view.findViewById(R.id.tv_year)
             month = view.findViewById(R.id.tv_month)
             SetUpCalendar()
         }
@@ -42,7 +40,7 @@ class CustomCalendar(context: Context?, attrs: AttributeSet?) :
         dates.clear()
         var monthCalendar: Calendar = calendar.clone() as Calendar
         monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
-        var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) - 1
+        var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + 5
         monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
         while (dates.size < 42) {
             dates.add(monthCalendar.time)

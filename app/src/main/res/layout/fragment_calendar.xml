@@ -11,20 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
-
-        <TextView
-            android:id="@+id/tv_currentdate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="13"
-            android:textSize="30sp" />
-
         <TextView
             android:id="@+id/tv_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="September"
+            android:text="Sep"
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/tv_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2021"
             android:textSize="30sp" />
     </LinearLayout>
 
