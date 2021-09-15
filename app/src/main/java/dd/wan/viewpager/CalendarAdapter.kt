@@ -28,12 +28,16 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
         return ViewHolder(view)
     }
 
-    var itemSelected = 0
+    var itemSelected = -1
     var col: Int = Color.TRANSPARENT
     override fun onBindViewHolder(holder: CalendarAdapter.ViewHolder, position: Int) {
         holder.setData()
     }
-
+    fun resetColor()
+    {
+        itemSelected = -1
+        col = Color.TRANSPARENT
+    }
     override fun getItemCount(): Int {
         return list.size
     }

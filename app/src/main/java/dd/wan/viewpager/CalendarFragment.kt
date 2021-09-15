@@ -110,6 +110,7 @@ class CalendarFragment : Fragment() {
         if (this::calendar.isInitialized) {
             calendar.add(Calendar.MONTH, 1)
             updateData()
+            adapter.resetColor()
             adapter.notifyDataSetChanged()
         }
     }
@@ -118,6 +119,7 @@ class CalendarFragment : Fragment() {
         if (this::calendar.isInitialized) {
             calendar.add(Calendar.MONTH, -1)
             updateData()
+            adapter.resetColor()
             adapter.notifyDataSetChanged()
         }
     }
