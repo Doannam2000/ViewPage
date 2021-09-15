@@ -11,18 +11,18 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
+import java.time.Month
 import java.util.*
 import kotlin.collections.ArrayList
 
 class CalendarFragment : Fragment() {
     //    var calendar: Calendar = Calendar.getInstance(Locale.getDefault())
     var dates: ArrayList<Date> = ArrayList()
-    var sdfDate = SimpleDateFormat("dd",Locale.getDefault())
+    var sdfDate = SimpleDateFormat("dd", Locale.getDefault())
     lateinit var calendar: Calendar
     var start = -2
     lateinit var adapter: CalendarAdapter
     lateinit var calendarRecycler: RecyclerView
-
 
     fun newInstance(calendar: Calendar, start: Int) = CalendarFragment().apply {
         arguments = bundleOf(
@@ -68,25 +68,41 @@ class CalendarFragment : Fragment() {
         monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
         var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + start
         monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
-        if(sdfDate.format(monthCalendar.time).toString() < "26" )
-        {
-            if(start==-2)
+        if (sdfDate.format(monthCalendar.time)
+                .toString() < "26" && !sdfDate.format(monthCalendar.time).toString().equals("1")) {
+            if (start == -2)
                 start = 5
-            else if(start == 5 )
+            else if (start == 5)
                 start = -2
-
-            if(start==-3)
+            if (start == -3)
                 start = 4
-            else if(start == 4)
+            else if (start == 4)
                 start = -3
+            if (start == -4)
+                start = 3
+            else if (start == -3)
+                start = -4
+            if (start == -5)
+                start = 2
+            else if (start == 2)
+                start = -5
             monthCalendar = calendar.clone() as Calendar
             monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
             firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + start
             monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
         }
+        var da = calendar.clone() as Calendar
         while (dates.size < 42) {
             dates.add(monthCalendar.time)
+            if (dates.size == 7 && (da.get(Calendar.MONTH) != monthCalendar.get(Calendar.MONTH))) {
+                dates.clear()
+                monthCalendar.add(Calendar.DAY_OF_MONTH, 1)
+                continue
+            }
             monthCalendar.add(Calendar.DAY_OF_MONTH, 1)
+            if ((dates.size % 7 == 0) && (da.get(Calendar.MONTH) != monthCalendar.get(Calendar.MONTH))) {
+                break
+            }
         }
     }
 
@@ -114,7 +130,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    fun getCurrentCalendar():Calendar{
+    fun getCurrentCalendar(): Calendar {
         return calendar
     }
 }

@@ -88,7 +88,7 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
                     if (i == 1) {
                         mHandler.postDelayed(Runnable {
                             if (i != 0) {
-                                layout.setBackgroundColor(Color.BLUE)
+                                layout.setBackgroundColor(Color.CYAN)
                             }
                             i = 0
                         }, 250)

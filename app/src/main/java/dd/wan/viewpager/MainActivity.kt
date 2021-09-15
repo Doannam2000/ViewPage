@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         })
         viewPager.adapter = adapter
         viewPager.setCurrentItem(1, false)
-
+        var adapterDay = DayAdapter(listday)
         setting.setOnClickListener {
             var popupMenu = PopupMenu(applicationContext, it)
             popupMenu.menuInflater.inflate(R.menu.menu, popupMenu.menu)
@@ -86,33 +86,40 @@ class MainActivity : AppCompatActivity() {
                 when (it.itemId) {
                     R.id.mon -> {
                         changeStart(-2)
+                        changeDay("Mon")
                     }
                     R.id.tue -> {
                         changeStart(-3)
+                        changeDay("Tue")
                     }
                     R.id.wed -> {
-                        changeStart(3)
+                        changeStart(-4)
+                        changeDay("Wed")
                     }
                     R.id.thur -> {
-                        changeStart(2)
+                        changeStart(-5)
+                        changeDay("Thur")
                     }
                     R.id.fri -> {
                         changeStart(1)
+                        changeDay("Fri")
                     }
                     R.id.sat -> {
                         changeStart(0)
+                        changeDay("Sat")
                     }
                     R.id.sun -> {
                         changeStart(-1)
+                        changeDay("Sun")
                     }
                 }
+                adapterDay.notifyDataSetChanged()
                 false
             }
         }
 
-
         // hiển thị ngày trong tuần
-        var adapterDay = DayAdapter(listday)
+
         val layoutManager: RecyclerView.LayoutManager =
             GridLayoutManager(this, 7)
         dayOfWeek.layoutManager =  layoutManager
@@ -127,6 +134,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun changeDay(string:String)
+    {
+        var listPhu = ArrayList<String>()
+        while (!listday.get(0).equals(string))
+        {
+            listPhu.add(listday.get(0))
+            listday.removeAt(0)
+        }
+        listday.addAll(listPhu)
+    }
 
     class DayAdapter(var list: ArrayList<String>) : RecyclerView.Adapter<DayAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayAdapter.ViewHolder {
@@ -150,5 +167,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }
 
