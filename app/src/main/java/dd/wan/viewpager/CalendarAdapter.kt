@@ -28,12 +28,10 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
         return ViewHolder(view)
     }
 
-    var da = Calendar.getInstance(Locale.getDefault())
     var itemSelected = 0
-
+    var col: Int = Color.TRANSPARENT
     override fun onBindViewHolder(holder: CalendarAdapter.ViewHolder, position: Int) {
         holder.setData()
-
     }
 
     override fun getItemCount(): Int {
@@ -58,18 +56,11 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
             } else {
                 textView.alpha = 0.2F
             }
-            if (day == da.get(Calendar.DAY_OF_MONTH) && currentDate.get(Calendar.MONTH) == da.get(Calendar.MONTH)) {
-                layout.setBackgroundColor(Color.GRAY)
+            textView.text = day.toString()
+            if (itemSelected == adapterPosition) {
+                layout.setBackgroundColor(col)
             } else {
                 layout.setBackgroundColor(Color.parseColor("#f8f8f8"))
-            }
-            textView.text = day.toString()
-            if (itemSelected != adapterPosition) {
-                layout.setBackgroundColor(Color.parseColor("#f8f8f8"))
-            }
-            else
-            {
-
             }
         }
 
@@ -88,7 +79,8 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
                     if (i == 1) {
                         mHandler.postDelayed(Runnable {
                             if (i != 0) {
-                                layout.setBackgroundColor(Color.CYAN)
+                                col = Color.CYAN
+                                notifyDataSetChanged()
                             }
                             i = 0
                         }, 250)
@@ -102,7 +94,8 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
                                 rnd.nextInt(256),
                                 rnd.nextInt(256)
                             )
-                        layout.setBackgroundColor(color)
+                        col = color
+                        notifyDataSetChanged()
                     }
                     return false
                 }
