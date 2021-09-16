@@ -33,11 +33,12 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
     override fun onBindViewHolder(holder: CalendarAdapter.ViewHolder, position: Int) {
         holder.setData()
     }
-    fun resetColor()
-    {
+
+    fun resetColor() {
         itemSelected = -1
         col = Color.TRANSPARENT
     }
+
     override fun getItemCount(): Int {
         return list.size
     }
@@ -94,9 +95,9 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
                         val color: Int =
                             Color.argb(
                                 255,
-                                rnd.nextInt(256),
-                                rnd.nextInt(256),
-                                rnd.nextInt(256)
+                                rnd.nextInt(127) + 127,
+                                rnd.nextInt(127) + 127,
+                                rnd.nextInt(127) + 127
                             )
                         col = color
                         notifyDataSetChanged()
