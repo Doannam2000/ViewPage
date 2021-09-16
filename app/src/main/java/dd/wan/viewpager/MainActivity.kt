@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
 
 
         // tạo danh sách fragment và setup viewpager
-        list.add(CalendarFragment().newInstance(prevMonth, -2)) // mặc định bắt đầu từ thứ 2
-        list.add(CalendarFragment().newInstance(calendar, -2))
-        list.add(CalendarFragment().newInstance(nextMonth, -2))
+        list.add(CalendarFragment().newInstance(prevMonth, 5)) // mặc định bắt đầu từ thứ 2
+        list.add(CalendarFragment().newInstance(calendar, 5))
+        list.add(CalendarFragment().newInstance(nextMonth, 5))
         var adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, list)
         viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
@@ -85,19 +85,19 @@ class MainActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.mon -> {
-                        changeStart(-2)
+                        changeStart(5) //-2
                         changeDay("Mon")
                     }
                     R.id.tue -> {
-                        changeStart(-3)
+                        changeStart(4) //-3
                         changeDay("Tue")
                     }
                     R.id.wed -> {
-                        changeStart(-4)
+                        changeStart(3) //-4
                         changeDay("Wed")
                     }
                     R.id.thur -> {
-                        changeStart(-5)
+                        changeStart(2) //-5
                         changeDay("Thur")
                     }
                     R.id.fri -> {

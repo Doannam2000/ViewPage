@@ -1,6 +1,7 @@
 package dd.wan.viewpager
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,7 @@ class CalendarFragment : Fragment() {
     var dates: ArrayList<Date> = ArrayList()
     var sdfDate = SimpleDateFormat("dd", Locale.getDefault())
     lateinit var calendar: Calendar
-    var start = -2
+    var start = 5
     lateinit var adapter: CalendarAdapter
     lateinit var calendarRecycler: RecyclerView
 
@@ -30,7 +31,6 @@ class CalendarFragment : Fragment() {
             "start" to start
         )
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,30 +67,18 @@ class CalendarFragment : Fragment() {
         var monthCalendar: Calendar = calendar.clone() as Calendar
         monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
         var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + start
-        monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
-        if (sdfDate.format(monthCalendar.time)
-                .toString() < "26" && !sdfDate.format(monthCalendar.time).toString().equals("1")) {
-            if (start == -2)
-                start = 5
-            else if (start == 5)
+        if (firstOfMonth.toString().toInt() == -1) {
+            if (start == 5)
                 start = -2
-            if (start == -3)
-                start = 4
-            else if (start == 4)
+            if (start == 4)
                 start = -3
-            if (start == -4)
-                start = 3
-            else if (start == -3)
+            if (start == 3)
                 start = -4
-            if (start == -5)
-                start = 2
-            else if (start == 2)
+            if (start == 2)
                 start = -5
-            monthCalendar = calendar.clone() as Calendar
-            monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
             firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + start
-            monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
         }
+        monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
         var da = calendar.clone() as Calendar
         while (dates.size < 42) {
             dates.add(monthCalendar.time)
