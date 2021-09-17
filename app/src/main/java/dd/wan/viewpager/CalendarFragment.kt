@@ -67,17 +67,6 @@ class CalendarFragment : Fragment() {
         var monthCalendar: Calendar = calendar.clone() as Calendar
         monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
         var firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + start
-        if (firstOfMonth.toString().toInt() == -1) {
-            if (start == 5)
-                start = -2
-            if (start == 4)
-                start = -3
-            if (start == 3)
-                start = -4
-            if (start == 2)
-                start = -5
-            firstOfMonth = monthCalendar.get(Calendar.DAY_OF_WEEK) + start
-        }
         monthCalendar.add(Calendar.DAY_OF_MONTH, -firstOfMonth)
         var da = calendar.clone() as Calendar
         while (dates.size < 42) {
