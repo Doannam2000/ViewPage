@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     var listday = arrayListOf<String>("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun")
     var sdfMonth = SimpleDateFormat("MMMM", Locale.ENGLISH)
     var sdfYear = SimpleDateFormat("yyyy", Locale.ENGLISH)
-    var start = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +39,9 @@ class MainActivity : AppCompatActivity() {
         tv_year.text = year
 
         // tạo danh sách fragment và setup viewpager
-        list.add(CalendarFragment().newInstance(prevMonth, start)) // mặc định bắt đầu từ thứ 2
-        list.add(CalendarFragment().newInstance(calendar, start))
-        list.add(CalendarFragment().newInstance(nextMonth, start))
+        list.add(CalendarFragment().newInstance(prevMonth, 5)) // mặc định bắt đầu từ thứ 2
+        list.add(CalendarFragment().newInstance(calendar, 5))
+        list.add(CalendarFragment().newInstance(nextMonth, 5))
 
         var adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, list)
 
@@ -85,37 +84,30 @@ class MainActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.mon -> {
-                        start = 5
                         changeStart(5) //-2
                         changeDay("Mon")
                     }
                     R.id.tue -> {
-                        start = 4
                         changeStart(4) //-3
                         changeDay("Tue")
                     }
                     R.id.wed -> {
-                        start = 3
                         changeStart(3) //-4
                         changeDay("Wed")
                     }
                     R.id.thur -> {
-                        start = 2
                         changeStart(2) //-5
                         changeDay("Thur")
                     }
                     R.id.fri -> {
-                        start = 1
                         changeStart(1)
                         changeDay("Fri")
                     }
                     R.id.sat -> {
-                        start = 0
                         changeStart(0)
                         changeDay("Sat")
                     }
                     R.id.sun -> {
-                        start = -1
                         changeStart(-1)
                         changeDay("Sun")
                     }
