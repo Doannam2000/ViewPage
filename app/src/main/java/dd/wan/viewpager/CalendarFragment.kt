@@ -19,7 +19,7 @@ import kotlin.collections.ArrayList
 class CalendarFragment : Fragment() {
     //    var calendar: Calendar = Calendar.getInstance(Locale.getDefault())
     var dates: ArrayList<Date> = ArrayList()
-    var sdfDate = SimpleDateFormat("dd", Locale.getDefault())
+
     lateinit var calendar: Calendar
     var start = 5
     lateinit var adapter: CalendarAdapter
@@ -41,6 +41,7 @@ class CalendarFragment : Fragment() {
         start = arguments?.getInt("start")!!
         var view: View = inflater.inflate(R.layout.fragment_calendar, container, false)
         calendarRecycler = view.findViewById(R.id.recycler_calendar)
+        calendarRecycler.itemAnimator = null
         // hiển thị ngày tháng
         adapter = CalendarAdapter(dates, calendar)
         updateData()
@@ -51,6 +52,7 @@ class CalendarFragment : Fragment() {
     fun setUpCalendar() {
         val layoutManager: RecyclerView.LayoutManager =
             GridLayoutManager(context, 7)
+
         calendarRecycler.layoutManager = layoutManager
         calendarRecycler.setHasFixedSize(true)
         calendarRecycler.setItemViewCacheSize(42)
@@ -58,7 +60,6 @@ class CalendarFragment : Fragment() {
         var dividerItemDecoration1 = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         calendarRecycler.addItemDecoration(dividerItemDecoration)
         calendarRecycler.addItemDecoration(dividerItemDecoration1)
-        calendarRecycler.setItemAnimator(null)
         calendarRecycler.adapter = adapter
     }
 
@@ -105,6 +106,7 @@ class CalendarFragment : Fragment() {
         this.start = start
         if (this::calendar.isInitialized) {
             updateData()
+            adapter.resetColor()
             adapter.notifyDataSetChanged()
         }
     }

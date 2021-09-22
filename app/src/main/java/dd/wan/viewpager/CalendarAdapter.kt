@@ -3,9 +3,8 @@ package dd.wan.viewpager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.os.Handler
-import android.os.Message
-import android.os.SystemClock
+import android.util.Log
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -13,30 +12,43 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
-import kotlin.collections.ArrayList
-import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
 import java.text.SimpleDateFormat
+import java.util.*
+import android.view.GestureDetector
 
 
 class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
     RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
+
+    var sdfDate = SimpleDateFormat("dd", Locale.getDefault())
+    var daySelected = sdfDate.format(Calendar.getInstance().time)
+    var itemSelected = -1
+    var posision = -1
+    var col: Int = Color.TRANSPARENT
+    lateinit var context: Context
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarAdapter.ViewHolder {
         var view: View =
             LayoutInflater.from(parent.context).inflate(R.layout.custom_item, parent, false)
+        context = parent.context
         return ViewHolder(view)
     }
 
-    var itemSelected = -1
-    var col: Int = Color.TRANSPARENT
+
     override fun onBindViewHolder(holder: CalendarAdapter.ViewHolder, position: Int) {
         holder.setData()
     }
 
     fun resetColor() {
-        itemSelected = -1
-        col = Color.TRANSPARENT
+        for (i in 0 until list.size) {
+            if (sdfDate.format(list.get(i)).equals(daySelected)) {
+                itemSelected = i
+                if (daySelected > "24")
+                    continue
+                else if (daySelected < "6")
+                    break
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -74,37 +86,76 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
         }
 
         init {
-            val rnd = Random()
-            var i = 0
-            var mHandler: Handler = Handler()
-            layout.setOnTouchListener(object : View.OnTouchListener {
-                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                    itemSelected = adapterPosition
-                    i++
-                    if (i == 1) {
-                        mHandler.postDelayed(Runnable {
-                            if (i != 0) {
-                                col = Color.CYAN
-                                notifyDataSetChanged()
-                            }
-                            i = 0
-                        }, 250)
-                    }
-                    if (i == 2) {
-                        i = 0
-                        val color: Int =
-                            Color.argb(
-                                255,
-                                rnd.nextInt(127) + 127,
-                                rnd.nextInt(127) + 127,
-                                rnd.nextInt(127) + 127
-                            )
-                        col = color
-                        notifyDataSetChanged()
-                    }
-                    return false
+            var gestureDetector = GestureDetector(context, GestureListener())
+            layout.setOnTouchListener { v, event ->
+                if (adapterPosition != -1) {
+                    posision = adapterPosition
                 }
-            })
+                gestureDetector.onTouchEvent(event)
+            }
+        }
+    }
+
+    inner class GestureListener : SimpleOnGestureListener() {
+        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            itemSelected = posision
+            daySelected = sdfDate.format(list.get(itemSelected))
+            col = Color.CYAN
+            notifyDataSetChanged()
+            return true
+        }
+
+        override fun onDown(e: MotionEvent?): Boolean {
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            itemSelected = posision
+            daySelected = sdfDate.format(list.get(itemSelected))
+            val rnd = Random()
+            val color: Int =
+                Color.argb(
+                    255,
+                    rnd.nextInt(127) + 127,
+                    rnd.nextInt(127) + 127,
+                    rnd.nextInt(127) + 127
+                )
+            col = color
+            notifyDataSetChanged()
+            return true
         }
     }
 }
+
+// Double click 2
+//            var i = 0
+//            var mHandler: Handler = Handler()
+//            layout.setOnTouchListener(object : View.OnTouchListener {
+//                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+//                    itemSelected = adapterPosition
+//                    daySelected = sdfDate.format(list.get(adapterPosition))
+//                    i++
+//                    if (i == 1) {
+//                        mHandler.postDelayed(Runnable {
+//                            if (i != 0) {
+//                                col = Color.CYAN
+//                                notifyDataSetChanged()
+//                            }
+//                            i = 0
+//                        }, 250)
+//                    }
+//                    if (i == 2) {
+//                        i = 0
+//                        val color: Int =
+//                            Color.argb(
+//                                255,
+//                                rnd.nextInt(127) + 127,
+//                                rnd.nextInt(127) + 127,
+//                                rnd.nextInt(127) + 127
+//                            )
+//                        col = color
+//                        notifyDataSetChanged()
+//                    }
+//                    return false
+//                }
+//            })
