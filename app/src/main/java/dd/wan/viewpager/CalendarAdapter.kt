@@ -20,8 +20,7 @@ import android.view.GestureDetector
 class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
     RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
-    var sdfDate = SimpleDateFormat("dd", Locale.getDefault())
-    var daySelected = sdfDate.format(Calendar.getInstance().time)
+    var daySelected = Calendar.getInstance().time
     var itemSelected = -1
     var posision = -1
     var col: Int = Color.TRANSPARENT
@@ -40,13 +39,11 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
     }
 
     fun resetColor() {
+        itemSelected = -1
         for (i in 0 until list.size) {
-            if (sdfDate.format(list.get(i)).equals(daySelected)) {
+            if (list.get(i) == daySelected) {
                 itemSelected = i
-                if (daySelected > "24")
-                    continue
-                else if (daySelected < "6")
-                    break
+                break
             }
         }
     }
@@ -99,7 +96,7 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
     inner class GestureListener : SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
             itemSelected = posision
-            daySelected = sdfDate.format(list.get(itemSelected))
+            daySelected = list.get(itemSelected)
             col = Color.CYAN
             notifyDataSetChanged()
             return true
@@ -111,7 +108,7 @@ class CalendarAdapter(var list: ArrayList<Date>, var currentDate: Calendar) :
 
         override fun onDoubleTap(e: MotionEvent): Boolean {
             itemSelected = posision
-            daySelected = sdfDate.format(list.get(itemSelected))
+            daySelected = list.get(itemSelected)
             val rnd = Random()
             val color: Int =
                 Color.argb(
