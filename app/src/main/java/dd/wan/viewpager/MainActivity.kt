@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 100
         viewPager.setCurrentItem(1, false)
         var adapterDay = DayAdapter(listday)
         setting.setOnClickListener {
